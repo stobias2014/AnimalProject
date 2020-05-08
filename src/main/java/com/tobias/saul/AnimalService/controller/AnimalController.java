@@ -1,8 +1,12 @@
 package com.tobias.saul.AnimalService.controller;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,8 +32,13 @@ public class AnimalController {
 	}
 	
 	@GetMapping("/animals/{animalId}")
-	public Animal findAnimalById(@PathVariable("animalId") Long animalId) {
-		return animalService.get(animalId);
+	public EntityModel<Animal> findAnimalById(@PathVariable("animalId") Long animalId) {
+		
+		Animal animal = animalService.get(animalId);
+		
+		return new EntityModel<>(animal,
+			    linkTo(methodOn(AnimalController.class).findAnimalById(animalId)).withSelfRel(),
+			    linkTo(methodOn(AnimalController.class).findAll()).withRel("animals"));
 	}
 	
 	@PostMapping("/animals")
