@@ -41,7 +41,6 @@ public class AnimalService {
 	}
 
 	public List<Animal> getAll() {
-		// TODO Auto-generated method stub
 		return animalRepository.findAll();
 	}
 	

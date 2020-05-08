@@ -1,5 +1,6 @@
 package com.tobias.saul.AnimalService.pojos;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,6 +18,7 @@ public class Animal {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "animal_id")
 	private Long animalId;
 	private String name;
 
