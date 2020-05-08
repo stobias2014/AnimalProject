@@ -4,8 +4,10 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,8 +29,18 @@ public class AnimalController {
 	AnimalService animalService;
 	
 	@GetMapping("/animals")
-	public List<Animal> findAll() {
-		return animalService.getAll();
+	public CollectionModel<EntityModel<Animal>> findAll() {
+		
+		List<EntityModel<Animal>> animals = animalService
+				.getAll().stream()
+				.map(animal -> new EntityModel(animal,
+						linkTo(methodOn(AnimalController.class).findAnimalById(animal.getAnimalId())).withSelfRel(),
+						linkTo(methodOn(AnimalController.class).findAll()).withRel("animals")))
+				.collect(Collectors.toList());
+		
+		return new CollectionModel<>(animals,
+				linkTo(methodOn(AnimalController.class).findAll()).withSelfRel());
+		
 	}
 	
 	@GetMapping("/animals/{animalId}")
