@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tobias.saul.AnimalService.assesmbler.AnimalModelAssembler;
 import com.tobias.saul.AnimalService.pojos.Animal;
 import com.tobias.saul.AnimalService.services.AnimalService;
 
@@ -27,15 +28,15 @@ public class AnimalController {
 	
 	@Autowired
 	AnimalService animalService;
+	@Autowired
+	AnimalModelAssembler assembler;
 	
 	@GetMapping("/animals")
 	public CollectionModel<EntityModel<Animal>> findAll() {
 		
 		List<EntityModel<Animal>> animals = animalService
 				.getAll().stream()
-				.map(animal -> new EntityModel(animal,
-						linkTo(methodOn(AnimalController.class).findAnimalById(animal.getAnimalId())).withSelfRel(),
-						linkTo(methodOn(AnimalController.class).findAll()).withRel("animals")))
+				.map(assembler :: toModel)
 				.collect(Collectors.toList());
 		
 		return new CollectionModel<>(animals,
@@ -48,9 +49,7 @@ public class AnimalController {
 		
 		Animal animal = animalService.get(animalId);
 		
-		return new EntityModel<>(animal,
-			    linkTo(methodOn(AnimalController.class).findAnimalById(animalId)).withSelfRel(),
-			    linkTo(methodOn(AnimalController.class).findAll()).withRel("animals"));
+		return assembler.toModel(animal);
 	}
 	
 	@PostMapping("/animals")
