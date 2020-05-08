@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 public class Animal {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue
 	@Column(name = "animal_id")
 	private Long animalId;
 	private String name;

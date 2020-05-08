@@ -66,14 +66,14 @@ public class AnimalServiceApplicationTests {
 		animal.setName("right name");
 		animalService.update(animal);
 		
-		assertEquals(animal, animalService.get(animal.getAnimalId()));
+		assertEquals(animal, animalService.update(animal));
 	}
 	
 	@Test
 	public void test_DeleteAnimalInDatabase() {
 		animal = context.getBean(Animal.class);
 		animalService.save(animal);
-		animalService.delete(animal);
+		animalService.delete(animal.getAnimalId());
 		
 		assertNull(animalService.get(animal.getAnimalId()));
 	}
